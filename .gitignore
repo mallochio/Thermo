@@ -1,0 +1,7 @@
+logs/*
+data/*
+mlruns/*
+logs/*
+.idea/*
+.DS_Store
+**__pycache__**

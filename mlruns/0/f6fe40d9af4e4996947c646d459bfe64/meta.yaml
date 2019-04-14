@@ -1,0 +1,14 @@
+artifact_uri: /Users/sid/Downloads/Projects/Thermos-master/mlruns/0/f6fe40d9af4e4996947c646d459bfe64/artifacts
+end_time: 1555255744243
+entry_point_name: ''
+experiment_id: 0
+lifecycle_stage: active
+name: ''
+run_uuid: f6fe40d9af4e4996947c646d459bfe64
+source_name: main.py
+source_type: 4
+source_version: '0'
+start_time: 1555255719461
+status: 3
+tags: []
+user_id: sid
