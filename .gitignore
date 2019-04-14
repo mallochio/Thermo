@@ -3,5 +3,5 @@ data/*
 mlruns/*
 logs/*
 .idea/*
-.DS_Store
+**.DS_Store**
 **__pycache__**
