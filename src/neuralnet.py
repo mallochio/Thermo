@@ -7,7 +7,7 @@ import datetime
 from src.helper import norm, denorm
 
 
-def build_model(train_features, train_labels) :
+def build_model(train_features, train_labels, params=None):
     model = keras.Sequential(
         [
             layers.Dense(
@@ -19,19 +19,30 @@ def build_model(train_features, train_labels) :
             layers.BatchNormalization(),
             # layers.Dropout(0.1),
             layers.Dense(
-                128,
-                activation=tf.nn.relu,
-                kernel_initializer="glorot_normal"
+                128, activation=tf.nn.relu, kernel_initializer="glorot_normal"
             ),
             layers.BatchNormalization(),
             # layers.Dropout(0.1),
-            layers.Dense(len(train_labels.keys()), ),
+            layers.Dense(len(train_labels.keys())),
         ]
     )
-
-    optimizer = keras.optimizers.Adam(
-        lr=0.05, beta_1=0.9, beta_2=0.999, epsilon=1e-8, clipnorm=1.0
-    )
+    if not params:
+        # Default to currently best values
+        optimizer = keras.optimizers.Adam(
+            lr=0.05,
+            beta_1=0.9,
+            beta_2=0.999,
+            epsilon=1e-8,
+            clipnorm=1.0
+        )
+    else:
+        optimizer = keras.optimizers.Adam(
+            lr=params[0],
+            beta_1=params[1],
+            beta_2=params[2],
+            epsilon=params[3],
+            clipnorm=params[4]
+        )
 
     model.compile(
         loss="logcosh",
@@ -41,13 +52,13 @@ def build_model(train_features, train_labels) :
     return model
 
 
-def train_neural_net(train_features, train_labels) :
+def train_neural_net(train_features, train_labels, params=None):
     train_feat_stats = train_features.describe().transpose()
     train_label_stats = train_labels.describe().transpose()
     method = "stdev"
     norm_train_features = norm(train_features, train_feat_stats, method=method)
     norm_train_labels = norm(train_labels, train_label_stats, method=method)
-    model = build_model(norm_train_features, norm_train_labels)
+    model = build_model(norm_train_features, norm_train_labels, params=params)
     EPOCHS = 500
     log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     tensorboard_callback = keras.callbacks.TensorBoard(
