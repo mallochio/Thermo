@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+import shutil
+import os
+import optuna
 import numpy as np
 import pandas as pd
 import mlflow
@@ -8,13 +11,13 @@ from src.gradientboost import train_gbdt
 from src.play import play
 from src.helper import denorm
 from src.logger import log
-import shutil
-import warnings
-import sys
-import optuna
 
-shutil.rmtree("./mlruns/")
-shutil.rmtree("./logs/")
+if os.path.isdir("./mlruns"):
+    shutil.rmtree("./mlruns/")
+
+if os.path.isdir("./logs"):
+    shutil.rmtree("./logs/")
+
 experiment_id = mlflow.create_experiment("Optimize values")
 np.random.seed = 42
 features = [
@@ -31,6 +34,8 @@ labels = ["Temperature"]
 
 
 def objective(trial) :
+    train, test = train_test_split(df, shuffle=False, test_size=0.1)
+    test = test.reset_index(drop=True)
     lr = trial.suggest_loguniform('learning_rate', 1e-5, 1e-2),
     beta_1 = trial.suggest_loguniform('beta1', 1e-3, 1e-1),
     beta_2 = trial.suggest_loguniform('beta2', 1e-4, 1e-2),
@@ -53,13 +58,12 @@ def objective(trial) :
         predictions = denorm(norm_predictions, test_stats, method=method)
         test_error = abs((y_test - predictions)["Temperature"])
         log(model=model, error=test_error)
-        return (test_error.describe().T['max'] + test_error.describe().T['50%'])
+        return test_error.describe().T['max']
 
 
-df = pd.read_excel("data/ML_Data.xlsx")
-df = df.sample(frac=1).reset_index(drop=True)  # Shuffles dataframe rows randomly
-train, test = train_test_split(df, shuffle=False, test_size=0.1)
-test = test.reset_index(drop=True)
-study = optuna.create_study()
-study.optimize(objective, n_trials=100)
-print(study.best_params)
+if __name__ == '__main__':
+    df = pd.read_excel("data/ML_Data.xlsx")
+    df = df.sample(frac=1).reset_index(drop=True)  # Shuffles dataframe rows randomly
+    study = optuna.create_study()
+    study.optimize(objective, n_trials=100)
+    print(study.best_params)

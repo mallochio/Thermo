@@ -5,21 +5,6 @@ import seaborn as sns
 sns.set(rc={"figure.figsize" : (12, 8)})
 
 
-def norm(x, data_stats, method=None) :
-    if method == "stdev" :
-        return (x - data_stats["mean"]) / (data_stats["std"])
-    else :
-        return (x - data_stats["min"]) / (data_stats["max"] - data_stats["min"])
-
-
-def denorm(x, data_stats, method=None) :
-    if method == "stdev" :
-        denormed_x = x * data_stats["std"] + data_stats["mean"]
-    else :
-        denormed_x = x * (data_stats["max"] - data_stats["min"]) + data_stats["min"]
-    return denormed_x
-
-
 def plot_history(history) :
     hist = pd.DataFrame(history.history)
     hist["epoch"] = history.epoch

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from mlflow import log_metric, keras as mlflow_keras
+import mlflow
+from mlflow import log_metric
 
 
 def log(model, error):
@@ -7,4 +8,4 @@ def log(model, error):
     log_metric("median_ae", error.describe().T["50%"])
     log_metric("max_ae", error.describe().T["max"])
     log_metric("min_ae", error.describe().T["min"])
-    mlflow_keras.log_model(model, "models")
+    mlflow.keras.log_model(model, "models")
