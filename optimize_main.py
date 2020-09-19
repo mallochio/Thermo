@@ -88,7 +88,7 @@ def unoptimized(df):
 
 if __name__ == '__main__':
     df = pd.read_excel("data/ML_Data.xlsx")
-    df = df[['X1','X2','Y1','Y2','Area1','Area2','Perimeter1','Perimeter2','D1','D2','D1D2','Identifier','Temperature']]
+    df = df[features+labels]
     for feat in df.columns:
         df[feat] = df[feat].astype(np.float)
     df = df.sample(frac=1).reset_index(drop=True)  # Shuffles dataframe rows randomly

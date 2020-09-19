@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 sns.set(rc={"figure.figsize" : (12, 8)})
@@ -51,3 +52,7 @@ def denorm(df, stats, method=None):
     diff = stats['max'].iloc[0] - stats['min'].iloc[0]
     df['Temperature'] = df['Temperature'].map(lambda x: x * diff + stats['min'].iloc[0])
     return df
+
+
+def add_axes_to_data(x):
+    return x[np.newaxis, np.newaxis, :, np.newaxis]

@@ -1,36 +1,11 @@
 # -*- coding: utf-8 -*-
 import tensorflow as tf
 from tensorflow.keras import layers
+from tensorflow.keras.models import Model
 from src import config
 
 
-def build_mobilenet(params=None):
-    model = tf.keras.applications.mobilenet_v2.MobileNetV2(
-        input_shape=[config.NFEATURES],
-        include_top=False,
-    )
-    return None
-
-
-def build_model(params=None):
-    model = tf.keras.Sequential(
-        [
-            layers.Dense(
-                64,
-                activation=tf.nn.relu,
-                input_shape=[config.NFEATURES],
-                kernel_initializer="glorot_normal",
-            ),
-            layers.BatchNormalization(),
-            # layers.Dropout(0.1),
-            layers.Dense(
-                128, activation=tf.nn.relu, kernel_initializer="glorot_normal"
-            ),
-            layers.BatchNormalization(),
-            # layers.Dropout(0.1),
-            layers.Dense(config.NLABELS),
-        ]
-    )
+def compile_model(model, params=None):
     if not params:
         # Default to currently best values
         optimizer = tf.keras.optimizers.Adam(
@@ -53,8 +28,42 @@ def build_model(params=None):
     return model
 
 
+def build_mobilenet(params=None):
+    mobilenet= tf.keras.applications.mobilenet_v2.MobileNetV2(
+        input_shape=[None, None, config.NFEATURES, None],
+        include_top=False,
+    )
+    x = mobilenet.output
+    out = tf.keras.layers.Dense(1)(x)
+    model = Model(inputs=[mobilenet.inputs], outputs=out)
+    model = compile_model(model, params)
+    return model
+
+
+def build_model(params=None):
+    model = tf.keras.Sequential(
+        [
+            layers.Dense(
+                64,
+                activation=tf.nn.relu,
+                input_shape=[config.NFEATURES],
+                kernel_initializer="glorot_normal",
+            ),
+            layers.BatchNormalization(),
+            # layers.Dropout(0.1),
+            layers.Dense(
+                128, activation=tf.nn.relu, kernel_initializer="glorot_normal"
+            ),
+            layers.BatchNormalization(),
+            # layers.Dropout(0.1),
+            layers.Dense(config.NLABELS),
+        ]
+    )
+    model = compile_model(model, params)
+    return model
+
+
 def train_neural_net(X_train, y_train, params=None):
-    # model = build_model(params)
-    model =
+    model = build_model(params)
     hist = model.fit(X_train, y_train, epochs=100)
     return model
