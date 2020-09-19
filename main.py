@@ -42,7 +42,7 @@ if __name__ == "__main__":
     params = [float(i) for i in sys.argv[1:]] if len(sys.argv) > 1 else None
 
     for ntrial in range(1):
-        with mlflow.start_run(experiment_id=experiment_id, source_name="main.py", source_version="0"):
+        with mlflow.start_run(experiment_id=experiment_id):
             pipeline = run_training(x_train, y_train)
             predictions = run_testing(x_test, pipeline)
             predictions = pd.DataFrame(predictions, columns=config.LABELS)

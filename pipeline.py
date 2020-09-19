@@ -19,4 +19,9 @@ reg = KerasRegressor(
     ],
 )
 
-neuralPipe = Pipeline([("scale", StandardScaler()), ("regressor", reg)])
+neuralPipe = Pipeline(
+    [
+        ("scale", StandardScaler()),
+        ("regressor", reg)
+    ]
+)

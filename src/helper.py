@@ -33,3 +33,21 @@ def plot_history(history) :
     # plt.ylim([0,20])
     plt.legend()
     plt.show()
+
+
+def norm(df, stats=None, method=None):
+    df = df.astype(float)
+    result = df.copy()
+    for feature_name in df.columns:
+        if feature_name != 'Identifier':
+            max_value = df[feature_name].max()
+            min_value = df[feature_name].min()
+            diff = max(1e-6, max_value - min_value)
+            result[feature_name] = (df[feature_name] - min_value) / diff
+    return result
+
+
+def denorm(df, stats, method=None):
+    diff = stats['max'].iloc[0] - stats['min'].iloc[0]
+    df['Temperature'] = df['Temperature'].map(lambda x: x * diff + stats['min'].iloc[0])
+    return df

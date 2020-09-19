@@ -1,14 +1,19 @@
 # -*- coding: utf-8 -*-
-
 import tensorflow as tf
-from tensorflow import keras
 from tensorflow.keras import layers
-
 from src import config
 
 
+def build_mobilenet(params=None):
+    model = tf.keras.applications.mobilenet_v2.MobileNetV2(
+        input_shape=[config.NFEATURES],
+        include_top=False,
+    )
+    return None
+
+
 def build_model(params=None):
-    model = keras.Sequential(
+    model = tf.keras.Sequential(
         [
             layers.Dense(
                 64,
@@ -28,11 +33,11 @@ def build_model(params=None):
     )
     if not params:
         # Default to currently best values
-        optimizer = keras.optimizers.Adam(
+        optimizer = tf.keras.optimizers.Adam(
             lr=0.05, beta_1=0.9, beta_2=0.999, epsilon=1e-8, clipnorm=1.0
         )
     else:
-        optimizer = keras.optimizers.Adam(
+        optimizer = tf.keras.optimizers.Adam(
             lr=params[0],
             beta_1=params[1],
             beta_2=params[2],
@@ -45,4 +50,11 @@ def build_model(params=None):
         optimizer=optimizer,
         metrics=["logcosh", "mean_absolute_error", "mean_squared_error"],
     )
+    return model
+
+
+def train_neural_net(X_train, y_train, params=None):
+    # model = build_model(params)
+    model =
+    hist = model.fit(X_train, y_train, epochs=100)
     return model

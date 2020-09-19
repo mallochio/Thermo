@@ -2,6 +2,10 @@ import os
 import pathlib
 
 FEATURES = [
+    'X1',
+    'X2',
+    'Y1',
+    'Y2',
     "D1",
     "D2",
     "D1D2",
